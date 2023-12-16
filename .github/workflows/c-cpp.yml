@@ -1,0 +1,25 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install ninja, llvm & clang
+      run: sudo apt-get install ninja-build llvm-dev libclang-dev
+    - name: configure & generate
+      run: cmake -DCMAKE_BUILD_TYPE=Release -S${{ github.workspace }} -B${{ github.workspace }}/build -G Ninja
+    - name: build
+      working-directory: ./build
+      run: ninja
+    - name: test
+      working-directory: ./build
+      run: ninja check-verif
