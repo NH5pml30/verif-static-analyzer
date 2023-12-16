@@ -4,7 +4,9 @@ project(verif-static-analyzer VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(LLVM REQUIRED CONFIG)
+find_package(LLVM 15 REQUIRED CONFIG)
+find_package(Clang REQUIRED CONFIG
+  HINTS "${LLVM_INSTALL_PREFIX}/lib/cmake/clang")
 include(AddLLVM)
 
 add_subdirectory(src)
