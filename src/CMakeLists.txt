@@ -2,6 +2,8 @@ include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 message(STATUS "${LLVM_INCLUDE_DIRS}")
 
+add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter)
+
 add_executable(verif-static-analyzer main.cpp)
 
 target_link_libraries(verif-static-analyzer
