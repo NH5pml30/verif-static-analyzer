@@ -17,7 +17,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: Install apt packages
-      run: sudo apt-get install ninja-build llvm-15-dev libclang-15-dev sqlite3 libsqlite3-dev dub
+      run: sudo apt-get install clang-15 ninja-build llvm-15-dev libclang-15-dev sqlite3 libsqlite3-dev dub z3
     - name: Install python packages
       run: pip install lit
     - name: Configure & generate
