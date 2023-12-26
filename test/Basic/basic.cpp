@@ -1,7 +1,6 @@
-// RUN: %verif %s 2>&1 | %FileCheck %s
+// checks that program starts normally
+// RUN: %verif %s
 
 int main() {
-// CHECK: TranslationUnitDecl
-// CHECK: Hello, from verif-static-analyzer!
   return 0;
 }

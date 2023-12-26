@@ -1,0 +1,22 @@
+add_verif_module(ESCA
+  ESCA.cpp
+  AST/ESCAASTVisitor.cpp
+  FSM/FSM.cpp
+  FSM/StateFSM.cpp
+  SMT/BinarySMT.cpp
+  SMT/VariableSMT.cpp
+  SMT/VersionedVariable.cpp
+  target/AnalyzeProcess.cpp
+  target/Statements.cpp
+  target/Context.cpp
+  utils/common.cpp
+  utils/DefectStorage.cpp
+)
+
+target_include_directories(ESCA
+  PRIVATE
+  AST
+  FSM
+  SMT
+  target
+  utils)

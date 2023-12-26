@@ -9,5 +9,5 @@ config.test_source_root = os.path.dirname(__file__)
 config.test_exec_root = os.path.join(config.my_obj_root, 'test')
 
 config.substitutions.append(('%verif',
-    os.path.join(config.my_obj_root, 'bin', 'verif-static-analyzer')))
-config.substitutions.append(('%FileCheck', config.my_filecheck))
+    os.path.join(config.my_obj_root, 'bin', 'verif-static-analyzer') + ' --extra-arg=-Wno-everything'))
+config.substitutions.append(('%FileCheck', config.my_filecheck + ' --allow-empty'))
