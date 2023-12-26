@@ -3,6 +3,7 @@
 // cppcheck - 1 верная
 // PVS - 1 верная
 // ESCA - 4 верных, 0 ложных
+// note: currently doesn't work
 // RUN: %verif %s -defects-out=%t.txt
 // RUN: cat %t.txt | %FileCheck %s
 #include <cstdio>

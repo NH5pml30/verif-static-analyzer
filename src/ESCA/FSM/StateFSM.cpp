@@ -27,5 +27,3 @@ bool operator<( const StateFSM &lhs, const StateFSM &rhs )
 {
     return lhs.id < rhs.id;
 }
-
-/* DEXTOOL: THIS FILE IS MUTATED */

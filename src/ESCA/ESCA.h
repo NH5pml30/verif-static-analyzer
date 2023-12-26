@@ -1,8 +1,8 @@
 #ifndef ESCA_H
 #define ESCA_H
 
-#include <memory>
 #include <def.h>
+#include <memory>
 
 class ESCA : public VerifModuleBase {
 public:
@@ -12,9 +12,9 @@ public:
   ESCA &operator=(const ESCA &) = delete;
   ESCA &operator=(ESCA &&) = delete;
 
-  std::unique_ptr<clang::ASTConsumer> create(clang::ASTContext &AstContext,
+  std::unique_ptr<clang::ASTConsumer> Create(clang::ASTContext &AstContext,
                                              llvm::StringRef InFile) override;
-  void finish() override;
+  void Finish() override;
 
   ~ESCA();
 };

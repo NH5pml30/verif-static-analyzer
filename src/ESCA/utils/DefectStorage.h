@@ -68,15 +68,15 @@ public:
     Diag(clang::SourceLocation Loc, llvm::StringRef Description,
          clang::DiagnosticIDs::Level Level = clang::DiagnosticIDs::Warning) {
         unsigned id{};
-        auto res = provider->diag(Loc, Description, &id, Level);
-        return DefectBuilder{res, id, provider->getLocString(Loc)};
+        auto res = provider->Diag(Loc, Description, &id, Level);
+        return DefectBuilder{res, id, provider->GetLocString(Loc)};
     }
 
     DefectBuilder
     Diag(const std::string &Loc, llvm::StringRef Description,
          clang::DiagnosticIDs::Level Level = clang::DiagnosticIDs::Warning) {
         unsigned id{};
-        auto res = provider->diag({}, Description, &id, Level);
+        auto res = provider->Diag({}, Description, &id, Level);
         return DefectBuilder{res, id, Loc};
     }
 

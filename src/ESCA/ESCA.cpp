@@ -17,7 +17,7 @@ ESCA::ESCA(clang::DiagnosticsEngine *DiagEngine)
   DefectStorage::Instance().SetDiagProvider(this);
 }
 
-std::unique_ptr<clang::ASTConsumer> ESCA::create(clang::ASTContext &AstContext,
+std::unique_ptr<clang::ASTConsumer> ESCA::Create(clang::ASTContext &AstContext,
                                                  llvm::StringRef InFile) {
   if (!CommonStorage::Instance().AddAnalyzeFile(InFile.str())) {
     return {};
@@ -26,7 +26,7 @@ std::unique_ptr<clang::ASTConsumer> ESCA::create(clang::ASTContext &AstContext,
   return std::make_unique<ESCAASTConsumer>();
 }
 
-void ESCA::finish() {
+void ESCA::Finish() {
   AnalyzeProcess a;
   a.StartAnalyze();
 
@@ -34,6 +34,4 @@ void ESCA::finish() {
             << std::endl;
 }
 
-ESCA::~ESCA() {
-    DefectStorage::Instance().ClearLocations();
-}
+ESCA::~ESCA() { DefectStorage::Instance().ClearLocations(); }

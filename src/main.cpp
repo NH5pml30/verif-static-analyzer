@@ -14,6 +14,7 @@
 #include <llvm/Support/CommandLine.h>
 
 #include "ESCA/ESCA.h"
+#include "GoToLater/GoToLater.h"
 
 static llvm::cl::opt<std::string>
     DefectsFileName("defects-out", llvm::cl::desc("Defects output filename"),
@@ -34,7 +35,7 @@ public:
     std::vector<std::unique_ptr<clang::ASTConsumer>> Consumers;
     Diagnostics->setSourceManager(&Compiler.getSourceManager());
     for (auto &Module : Modules)
-      Consumers.push_back(Module->create(Compiler.getASTContext(), InFile));
+      Consumers.push_back(Module->Create(Compiler.getASTContext(), InFile));
     return std::make_unique<clang::MultiplexConsumer>(std::move(Consumers));
   }
 };
@@ -53,8 +54,10 @@ public:
 
 static llvm::cl::OptionCategory VerifToolCategory("verif options");
 
+// Module registration: add modules here
 static void RegisterModules(clang::DiagnosticsEngine *DiagEngine) {
   Modules.push_back(std::make_unique<ESCA>(DiagEngine));
+  Modules.push_back(std::make_unique<GoToLater>(DiagEngine));
 }
 
 int main(int argc, const char *argv[]) {
@@ -91,17 +94,16 @@ int main(int argc, const char *argv[]) {
 
   RegisterModules(Diagnostics.get());
 
-  VerifActionFactory fac(Diagnostics.get());
-  if (Tool.run(&fac)) {
+  VerifActionFactory Fac(Diagnostics.get());
+  if (Tool.run(&Fac))
     return 1;
-  }
 
   clang::SourceManager SrcMgr(*Diagnostics, *Files);
   Diagnostics->setSourceManager(&SrcMgr);
   clang::LangOptions opts;
   DiagnosticPrinter.BeginSourceFile(opts, nullptr);
   for (auto &Module : Modules)
-    Module->finish();
+    Module->Finish();
   Modules.clear();
   DiagnosticPrinter.EndSourceFile();
 

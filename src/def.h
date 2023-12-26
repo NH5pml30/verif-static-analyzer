@@ -1,10 +1,10 @@
 #ifndef DEF_H
 #define DEF_H
 
-#include <llvm/ADT/StringRef.h>
-#include <clang/Basic/Diagnostic.h>
-#include <clang/AST/ASTContext.h>
 #include <clang/AST/ASTConsumer.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/Basic/Diagnostic.h>
+#include <llvm/ADT/StringRef.h>
 
 class DiagProvider {
 protected:
@@ -16,7 +16,7 @@ public:
       : CheckName(CheckName), DiagEngine(DiagEngine) {}
 
   clang::DiagnosticBuilder
-  diag(clang::SourceLocation Loc, llvm::StringRef Description,
+  Diag(clang::SourceLocation Loc, llvm::StringRef Description,
        unsigned *IDPtr = nullptr,
        clang::DiagnosticIDs::Level Level = clang::DiagnosticIDs::Warning) {
     assert(DiagEngine);
@@ -27,7 +27,7 @@ public:
     return DiagEngine->Report(Loc, ID);
   }
 
-  std::string getLocString(clang::SourceLocation Loc) {
+  std::string GetLocString(clang::SourceLocation Loc) {
     return Loc.printToString(DiagEngine->getSourceManager());
   }
 };
@@ -40,8 +40,8 @@ protected:
 
 public:
   virtual std::unique_ptr<clang::ASTConsumer>
-  create(clang::ASTContext &AstContext, llvm::StringRef InFile) = 0;
-  virtual void finish() = 0;
+  Create(clang::ASTContext &AstContext, llvm::StringRef InFile) = 0;
+  virtual void Finish() = 0;
 
   virtual ~VerifModuleBase() = default;
 };
