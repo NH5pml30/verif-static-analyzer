@@ -9,3 +9,4 @@ build_cmd = ["./build.sh"]
 test_cmd = ["./test.sh"]
 # test_cmd_dir = ["./build/unittests"]
 analyze_using_builtin = ["gtest"]
+max_mem_usage_percentage = 90
