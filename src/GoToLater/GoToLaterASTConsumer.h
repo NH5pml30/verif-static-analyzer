@@ -28,8 +28,8 @@ public:
 
     void ReportGoto(const clang::GotoStmt *Goto, const clang::LabelDecl *Lbl) {
       Provider->Diag(Goto->getGotoLoc(), "goto back jump");
-      Provider->Diag(Lbl->getLocation(), "label declared here", nullptr,
-                     clang::DiagnosticIDs::Note);
+      Provider->Diag(Lbl->getLocation(), "label declared here",
+                    clang::DiagnosticIDs::Note);
     }
 
     bool CheckGoto(const clang::GotoStmt *Goto) {

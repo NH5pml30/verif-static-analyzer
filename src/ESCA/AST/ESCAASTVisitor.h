@@ -6,6 +6,7 @@
 #include <clang/AST/Decl.h>
 //#include <z3++.h>
 
+#include "../utils/Location.h"
 
 /// @class Класс, который выполняет предварительный обход всего Clang AST дерева и посещает каждый узел.
 class ESCAASTVisitor : public clang::RecursiveASTVisitor<ESCAASTVisitor>
@@ -20,7 +21,7 @@ public:
 private:
     /// @brief Получение сторки с названием файла и номером строки в нем, где находится состояние
     /// @param st - состояние
-    std::string getLocation( const clang::Stmt *st );
+    DefectLocation getLocation( const clang::Stmt *st );
 
     /// @brief Метод для посещения функции
     /// @param f - основная функция
@@ -63,7 +64,7 @@ private:
     /// @param fooName - имя функции, которая возвращает указатель на ресурс
     /// @param isDecl - является ли переменная обявлением или объявлена ранее
     void
-    AddVarDeclFromFoo( const std::string &varName, std::string &fooName, const std::string &location, bool isDecl );
+    AddVarDeclFromFoo( const std::string &varName, std::string &fooName, const DefectLocation &location, bool isDecl );
 
     /// @brief Метод анализирует операцию присваивания
     /// @param init - инициализатор переменной

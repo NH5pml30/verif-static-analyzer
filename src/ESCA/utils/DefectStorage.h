@@ -1,94 +1,66 @@
 #ifndef DEFECT_STORAGE_H
 #define DEFECT_STORAGE_H
 
-#include <vector>
-#include <string>
-#include <set>
 #include <clang/Basic/Diagnostic.h>
 #include <def.h>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
-#include <type_traits>
 #include <clang/Frontend/TextDiagnosticPrinter.h>
 
-template<typename Tag>
-struct public_cast_traits;
-
-template<typename Tag>
-struct public_cast {
-    static inline typename public_cast_traits<Tag>::type value{};
-};
-
-template<typename Tag, typename public_cast_traits<Tag>::type MemPtr>
-struct access_t {
-    static const inline auto value = public_cast<Tag>::value = MemPtr;
-};
-
-template <>
-struct public_cast_traits<class CxTag> {
-    using type = std::unique_ptr<clang::TextDiagnostic>
-                             clang::TextDiagnosticPrinter::*;
-};
-template struct access_t<CxTag, &clang::TextDiagnosticPrinter::TextDiag>;
-
 /// @class Синглтон класса в котором сохраняются все найденные утечки ресурсов
-class DefectStorage
-{
+class DefectStorage {
 private:
-    struct DefectBuilder : clang::DiagnosticBuilder {
-        unsigned id;
-        std::string loc;
+  bool IsDuplicate(const std::string &loc) {
+    return !defectsLocations.insert(loc).second;
+  }
 
-        ~DefectBuilder() {
-            if (DefectStorage::Instance()
-                    .defectsLocations.insert(std::make_pair(id, loc))
-                    .second) {
-                Emit();
-            }
-            Clear();
-        }
-    };
+  clang::DiagnosticIDs::Level GetLevel(const std::string &loc,
+                                       clang::DiagnosticIDs::Level level) {
+    return IsDuplicate(loc) ? clang::DiagnosticIDs::Ignored : level;
+  }
 
 public:
-    /// @brief Предоставляет единственный экземпляр
-    static DefectStorage &Instance();
+  /// @brief Предоставляет единственный экземпляр
+  static DefectStorage &Instance();
 
-    void SetDiagProvider(DiagProvider *provider) {
-        this->provider = provider;
+  bool IsIgnored(clang::SourceLocation loc) const {
+    return provider->IsIgnored(loc);
+  }
+
+  void SetDiagProvider(DiagProvider *provider) { this->provider = provider; }
+
+  void ClearLocations() {
+    if (auto nProblems = defectsLocations.size()) {
+      Diag("<report>", "Found %0 problems", clang::DiagnosticIDs::Note)
+          << nProblems;
     }
+    defectsLocations.clear();
+  }
 
-    void ClearLocations() {
-        if (!defectsLocations.empty()) {
-            Diag("<report>", "Found %0 problems", clang::DiagnosticIDs::Note)
-                << defectsLocations.size();
-        }
-        defectsLocations.clear();
-    }
+  clang::DiagnosticBuilder
+  Diag(clang::SourceLocation loc, llvm::StringRef description,
+       clang::DiagnosticIDs::Level level = clang::DiagnosticIDs::Warning) {
+    return provider->Diag(loc, description,
+                          GetLevel(provider->GetLocString(loc), level));
+  }
 
-    DefectBuilder
-    Diag(clang::SourceLocation Loc, llvm::StringRef Description,
-         clang::DiagnosticIDs::Level Level = clang::DiagnosticIDs::Warning) {
-        unsigned id{};
-        auto res = provider->Diag(Loc, Description, &id, Level);
-        return DefectBuilder{res, id, provider->GetLocString(Loc)};
-    }
+  clang::DiagnosticBuilder
+  Diag(const std::string &loc, llvm::StringRef description,
+       clang::DiagnosticIDs::Level level = clang::DiagnosticIDs::Warning) {
+    return provider->Diag({}, description, GetLevel(loc, level));
+  }
 
-    DefectBuilder
-    Diag(const std::string &Loc, llvm::StringRef Description,
-         clang::DiagnosticIDs::Level Level = clang::DiagnosticIDs::Warning) {
-        unsigned id{};
-        auto res = provider->Diag({}, Description, &id, Level);
-        return DefectBuilder{res, id, Loc};
-    }
+  DefectStorage(const DefectStorage &inst) = delete;
 
-    DefectStorage( const DefectStorage &inst ) = delete;
-
-    DefectStorage &operator=( const DefectStorage &rhs ) = delete;
+  DefectStorage &operator=(const DefectStorage &rhs) = delete;
 
 private:
-    DefectStorage() = default;
+  DefectStorage() = default;
 
-    std::set<std::pair<unsigned, std::string>> defectsLocations;
-    DiagProvider *provider;
+  std::unordered_set<std::string> defectsLocations;
+  DiagProvider *provider;
 };
 
 #endif

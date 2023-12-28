@@ -229,7 +229,7 @@ void AnalyzeProcess::ProcessVarAssigmentFromPointer( VarAssigmentFromPointerStat
 void AnalyzeProcess::ProcessDelete( DeleteStatement *statement )
 {
     auto cntIter = processContext->variables.find(statement->name);
-    VersionedVariable vv(statement->name, "unused", cntIter->second.meta, cntIter->second.count);
+    VersionedVariable vv(statement->name, {"unused", false}, cntIter->second.meta, cntIter->second.count);
 
     processContext->fsm->AddDeleteState(vv, statement->isArray);
 }

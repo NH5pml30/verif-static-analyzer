@@ -289,13 +289,13 @@ void FSM::SolveRet( bool isArray, const StateFSM &s )
         {
             //No leak
         }
-        else if( solverResult.find("sat") != std::string::npos )
+        else if( solverResult.find("sat") != std::string::npos && !alloc[i].getLocation().IsIgnored )
         {
             // LEAK
             DefectStorage::Instance().Diag(
-                alloc[i].getLocation(),
+                alloc[i].getLocation().loc,
                 "resource leak. Variable name: %0, location: %1")
-                << alloc[i].Name() << alloc[i].getLocation();
+                << alloc[i].Name() << alloc[i].getLocation().loc;
         }
     }
 

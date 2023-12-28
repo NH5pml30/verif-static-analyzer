@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "../utils/Location.h"
+
 enum EMetaType
 {
     VAR_COMMON,
@@ -22,7 +24,7 @@ class Variable
 public:
     Variable() = delete;
 
-    Variable( const std::string &name, const std::string &loc, EMetaType mt, const std::string &type = "" )
+    Variable( const std::string &name, const DefectLocation &loc, EMetaType mt, const std::string &type = "" )
             : name(name), type(type), loc(loc), metaType(mt)
     {
     }
@@ -47,12 +49,12 @@ public:
         metaType = mt;
     }
 
-    std::string getLocation() const
+    DefectLocation getLocation() const
     {
         return loc;
     }
 
-    void setLocation( const std::string &l )
+    void setLocation( const DefectLocation &l )
     {
         loc = l;
     }
@@ -72,7 +74,7 @@ public:
 protected:
     std::string name;
     std::string type;
-    std::string loc;
+    DefectLocation loc;
     EMetaType metaType;
 };
 

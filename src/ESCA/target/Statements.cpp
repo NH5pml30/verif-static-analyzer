@@ -26,7 +26,7 @@ CompoundStatement::IsInOptions CompoundStatement::GetOptions() const
 
 VarAssigmentFromFooStatement::VarAssigmentFromFooStatement( const std::string &varName,
                                                             const std::string &fooName,
-                                                            const std::string &loc,
+                                                            const DefectLocation &loc,
                                                             bool isDecl )
         : isDecl(isDecl), varName(varName), fooName(fooName), loc(loc)
 {
@@ -35,7 +35,7 @@ VarAssigmentFromFooStatement::VarAssigmentFromFooStatement( const std::string &v
 
 VarAssigmentFromPointerStatement::VarAssigmentFromPointerStatement( const std::string &varName,
                                                                     const std::string &rhsName,
-                                                                    const std::string &loc,
+                                                                    const DefectLocation &loc,
                                                                     bool isDecl )
         : varName(varName), loc(loc), rhsName(rhsName), isDecl(isDecl)
 {
@@ -43,7 +43,7 @@ VarAssigmentFromPointerStatement::VarAssigmentFromPointerStatement( const std::s
 
 
 VarAssigmentNewStatement::VarAssigmentNewStatement( const std::string &varName, bool isArray,
-                                                    const std::string &loc, bool isDecl )
+                                                    const DefectLocation &loc, bool isDecl )
         : varName(varName), loc(loc), isArray(isArray), isDecl(isDecl)
 {
 }

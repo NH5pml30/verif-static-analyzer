@@ -42,10 +42,10 @@ bool ESCAASTVisitor::VisitFunctionDecl( clang::FunctionDecl *f )
 }
 
 
-std::string ESCAASTVisitor::getLocation( const clang::Stmt *st )
+DefectLocation ESCAASTVisitor::getLocation( const clang::Stmt *st )
 {
     auto loc = st->getBeginLoc();
-    return loc.printToString(*currSM);
+    return {loc.printToString(*currSM), DefectStorage::Instance().IsIgnored(loc)};
 }
 
 bool ESCAASTVisitor::ProcessFunction( clang::FunctionDecl *f )
@@ -57,8 +57,8 @@ bool ESCAASTVisitor::ProcessFunction( clang::FunctionDecl *f )
     ////////////
     clang::SourceManager &sm = f->getASTContext().getSourceManager();
     currSM = &sm;
-    auto loc = f->getLocation();
-    auto lstr = loc.printToString(sm);
+    // auto loc = f->getLocation();
+    // auto lstr = loc.printToString(sm);
 //    clang::SourceLocation::getFromPtrEncoding(loc.getPtrEncoding()).print(llvm::nulls(), sm);
 
 
@@ -294,7 +294,7 @@ bool ESCAASTVisitor::ProcessCallFunction( clang::CallExpr *rhsRefExpr )
     return true;
 }
 
-void ESCAASTVisitor::AddVarDeclFromFoo( const std::string &varName, std::string &fooName, const std::string &location,
+void ESCAASTVisitor::AddVarDeclFromFoo( const std::string &varName, std::string &fooName, const DefectLocation &location,
                                         bool isDecl )
 {
     EditFunName(fooName);
@@ -494,7 +494,7 @@ bool ESCAASTVisitor::ProcessReturn( clang::ReturnStmt *ret )
     {
         std::string dummyNewVarName = "!dummyVar";
         context.curFunction->returnName.insert(dummyNewVarName);
-        context.AddToLast(new Target::VarAssigmentNewStatement(dummyNewVarName, newPtr->isArray(), "something", true));
+        context.AddToLast(new Target::VarAssigmentNewStatement(dummyNewVarName, newPtr->isArray(), getLocation(newPtr), true));
         returnVarName2 = dummyNewVarName;
     }
 

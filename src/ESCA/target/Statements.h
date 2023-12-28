@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 
+#include "../utils/Location.h"
 
 enum STATEMENTS
 {
@@ -88,7 +89,7 @@ private:
 class VarAssigmentFromFooStatement : public Statement
 {
 public:
-    VarAssigmentFromFooStatement( const std::string &varName, const std::string &fooName, const std::string &loc,
+    VarAssigmentFromFooStatement( const std::string &varName, const std::string &fooName, const DefectLocation &loc,
                                   bool isDecl );
 
     STATEMENTS GetType() override
@@ -99,7 +100,7 @@ public:
     bool isDecl;
     std::string varName;
     std::string fooName;
-    std::string loc;
+    DefectLocation loc;
 };
 
 
@@ -107,7 +108,7 @@ class VarAssigmentFromPointerStatement : public Statement
 {
 public:
     VarAssigmentFromPointerStatement( const std::string &varName, const std::string &rhsName,
-                                      const std::string &loc, bool isDecl );
+                                      const DefectLocation &loc, bool isDecl );
 
     STATEMENTS GetType() override
     {
@@ -115,7 +116,7 @@ public:
     }
 
     std::string varName;
-    std::string loc;
+    DefectLocation loc;
     std::string rhsName;
     bool isDecl;
 };
@@ -124,7 +125,7 @@ public:
 class VarAssigmentNewStatement : public Statement
 {
 public:
-    VarAssigmentNewStatement( const std::string &varName, bool isArray, const std::string &loc, bool isDecl );
+    VarAssigmentNewStatement( const std::string &varName, bool isArray, const DefectLocation &loc, bool isDecl );
 
     STATEMENTS GetType() override
     {
@@ -132,7 +133,7 @@ public:
     }
 
     std::string varName;
-    std::string loc;
+    DefectLocation loc;
     bool isArray;
     bool isDecl;
 };

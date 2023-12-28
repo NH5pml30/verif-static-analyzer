@@ -27,6 +27,9 @@ jobs:
     - name: Test
       working-directory: ./build
       run: ninja check-verif
+    - name: Self-Check
+      working-directory: ./build
+      run: for file in $(find ../src -name '*.cpp'); do echo $file; ./bin/verif-static-analyzer -p compile_commands.json $file -ignore-files="(/usr/lib/llvm-.*)|(.*/src/ESCA/.*)" | grep -vzq "warning:\ " || exit 1; done
     - name: Install dextools
       run: dub run dextool -- -h
     - name: Mutation test

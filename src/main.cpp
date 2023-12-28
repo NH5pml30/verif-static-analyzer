@@ -20,6 +20,21 @@ static llvm::cl::opt<std::string>
     DefectsFileName("defects-out", llvm::cl::desc("Defects output filename"),
                     llvm::cl::init("-"));
 
+static llvm::cl::opt<std::string>
+    IgnoreFilesOpt("ignore-files", llvm::cl::desc("Ignore diagnostics in these files"),
+                    llvm::cl::init(""));
+
+llvm::Regex IgnoreFilesRegex;
+
+bool DiagProvider::IsIgnored(clang::SourceLocation Loc) const {
+  if (DiagEngine->getSourceManager().isInSystemHeader(Loc) ||
+      DiagEngine->getSourceManager().isInSystemMacro(Loc))
+    return true;
+  if (IgnoreFilesRegex.match(DiagEngine->getSourceManager().getFilename(Loc)))
+    return true;
+  return false;
+}
+
 static std::vector<std::unique_ptr<VerifModuleBase>> Modules;
 
 class VerifAction : public clang::ASTFrontendAction {
@@ -77,6 +92,7 @@ int main(int argc, const char *argv[]) {
 
   clang::IntrusiveRefCntPtr<clang::DiagnosticOptions> DiagOpts =
       new clang::DiagnosticOptions;
+  IgnoreFilesRegex = llvm::Regex(IgnoreFilesOpt);
   std::optional<llvm::raw_fd_ostream> OS;
   if (DefectsFileName != "-") {
     std::error_code EC;

@@ -10,7 +10,7 @@ class VersionedVariable : public Variable
 public:
     VersionedVariable() = delete;
 
-    VersionedVariable( const std::string &name, const std::string &location, EMetaType mt, int ver, const std::string &type="" )
+    VersionedVariable( const std::string &name, const DefectLocation &location, EMetaType mt, int ver, const std::string &type="" )
             : Variable(name, location, mt, type), version(ver)
     {
     }
